@@ -1,4 +1,4 @@
 from .app import App
 
 
-__all__ = ["app"]
+__all__ = ["App"]

@@ -10,45 +10,10 @@ from .paas import paas
 from .errors import ChulaiBuildError
 from .gem import Gemfile
 from .template import env
+from .utils import OutputManager
 
 
 logger = logging.getLogger(__name__)
-
-
-class OutputManager(object):
-    IGNORES = (
-        "---> ",
-        "Removing intermediate container ",
-        "Successfully built ",
-        "Step "
-    )
-
-    def __init__(self):
-        self._logs = []
-        self._success = False
-
-    def finish(self):
-        self._success = True
-
-    @property
-    def success(self):
-        return self._success
-
-    def new_log(self, log):
-        if isinstance(log, str):
-            log = [log]
-        for line in log:
-            line = line.strip()
-            self._logs.append(line)
-            for ign in self.IGNORES:
-                if line.startswith(ign):
-                    break
-            else:
-                yield line
-
-    @property
-    def log(self):
-        return "\n".join(self._logs) + "\n"
 
 
 class Build(object):
@@ -175,14 +140,14 @@ class Build(object):
                         )
                 # after build
                 # yield from self.after_build()
-                yield "success"
+                yield from omg.new_event(build="success")
             except:
+                yield from omg.new_event(build="failed")
                 logger.error("build error", exc_info=True)
                 with open(consts.BUILD_FAILURE_LOG, "wt") as log_f:
                     log_f.write("trace:\n{0}\noutput:\n{1}\n".format(
                         traceback.format_exc(), omg.log
                     ))
-                yield "failed"
 
     def after_build(self):
         yield self.final_report
@@ -223,7 +188,7 @@ class RailsBuild(Build):
 
         # gererate dockerfile
         dockerfile = env.get_template("rails.dockerfile").render(
-            build=self
+            build=self, paas=paas
         )
 
         tar = shcmd.tar.TarGenerator()

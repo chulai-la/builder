@@ -1,25 +1,22 @@
-from flask import Blueprint
+from flask import Blueprint, Response
 from flask import request
 
+from .builders import App
 
 builder_api = Blueprint("builder_api", __name__)
 
 
-App = None
-
-
-@builder_api.route()
+@builder_api.route("/builds", methods=["POST"])
 def build():
     app = App(
-        request.json["app_name"],
+        request.json["app-id"],
         "rails",  # app_type
         request.json["repo"],
         "ruby:2.2.0",  # base image
-        request.json["current_image"] or None,
-        dict(secret="secret"),
+        request.json["current-image"],
+        {}
     )
 
-    build = app.new_build(request.json["commmit"])
+    build = app.new_build(request.json["commit"])
 
-    for line in build.build():
-        print(line)
+    return Response(build.build(), mimetype="application/x-chulai-log")

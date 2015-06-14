@@ -76,5 +76,5 @@ class App(object):
         return "{0}{1}-{2}".format(reg_name, self.name, env_name)
 
     def new_build(self, commit):
-        Builder = paas.get_builder(self.app_type)
+        Builder = get_builder(self.app_type)
         return Builder(self, commit)
