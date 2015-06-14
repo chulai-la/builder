@@ -1,0 +1,15 @@
+{% if build.extra_deps %}
+RUN mkdir -p /home/{{ paas.user }}/deps && \
+    cd /home/{{ paas.user }}/deps && \
+    rm -f pkgs.list propose.list && \
+    touch installed.list && \
+    {% for dep in build.extra_deps -%}echo {{ dep }} >> propose.list && \
+    {% endfor -%}
+    grep -F -x -v -f installed.list propose.list | sort > pkgs.list && \
+    if [ -s pkgs.list ]; then \
+        echo "installing extra libs:" `cat pkgs.list | tr "\\n" " "` && apt-get update -y && apt-get install -y `cat pkgs.list`; \
+    fi && \
+    cat pkgs.list installed.list | sort | uniq > installed.list.new && \
+    mv installed.list.new installed.list && \
+    rm -f pkgs.list propose.list
+{% endif %}

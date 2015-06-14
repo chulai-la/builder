@@ -1,0 +1,4 @@
+source '{{ source }}'
+{% for gem, opt in dependencies.items()|sort %}
+gem '{{ gem }}'{% if opt %}, {{ opt }}{% endif %}
+{%- endfor %}

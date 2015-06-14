@@ -1,0 +1,29 @@
+# sync codebase
+ADD id_rsa /home/{{ paas.user }}/.ssh/id_rsa
+
+USER root
+RUN chown -R chulai:chulai /home/chulai/.ssh
+RUN chmod 400 /home/chulai/.ssh/id_rsa
+USER chulai
+RUN echo "Host *" > /home/chulai/.ssh/config && \
+    echo " UserKnownHostsFile=/dev/null" >> /home/chulai/.ssh/config && \
+    echo " StrictHostKeyChecking no" >> /home/chulai/.ssh/config
+
+RUN cd /home/{{ paas.user }}/.ssh && \
+    chown {{ paas.user }}:{{ paas.user }} id_rsa && \
+    chmod 400 id_rsa
+
+{%- if build.fresh_build %}
+RUN echo "Fresh build. Cloning codebase..."
+RUN git clone {{ build.app.repo }} {{ app_root }}
+{% else %}
+# fetch and clean
+RUN echo "Fetching and cleaning codebase..."
+RUN cd {{ app_root }} && \
+    git reset --hard && \
+    git clean -fdx && \
+    git remote set-url origin {{ build.app.repo }} && \
+    git fetch origin
+{% endif -%}
+RUN cd {{ app_root }} && git checkout {{ build.commit }}
+RUN rm /home/{{ paas.user }}/.ssh/id_rsa

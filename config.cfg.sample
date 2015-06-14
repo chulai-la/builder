@@ -1,0 +1,27 @@
+DOCKER_OPT = dict(
+    base_url="unix://var/run/docker.sock",
+    version="auto",
+    timeout=300,
+    tls=False
+)
+
+# user in container
+# 42... is the answer to every thing
+PAAS_USER = "chulai"
+PAAS_USER_UID = 4200
+
+# will be test with `ssh git@git-domain`
+GIT_DEPLOY_KEY_PATH = "/path/to/git-deploy-key"
+GIT = "git-domain"
+
+# for codebase analysizing
+CONSTRUCTION_SITE = "/path/to/construction-site"
+
+# paas requires these gems to be installed
+RAILS_DEPENDENCIES = [
+    ("mysql2", "0.3.18", []),
+    ("puma", "2.11.2", ["rack (>= 1.1, < 2.0)"])
+]
+
+# docker build timeout
+BUILD_TIMEOUT = 500

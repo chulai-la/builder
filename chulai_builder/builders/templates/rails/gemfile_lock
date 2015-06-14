@@ -1,0 +1,21 @@
+GEM
+  remote: {{ source }}
+  specs:
+    {%- for spec, spec_dependencies in specs.items()|sort %}
+    {{ spec }}{% if dependencies[spec] %}({{ dependencies[spec] }}){% endif %}
+      {%- if spec_dependencies -%}
+      {%- for spec_dependency in spec_dependencies|sort %}
+      {{ spec_dependency }}
+      {%- endfor -%}
+      {%- endif -%}
+    {%- endfor %}
+
+PLATFORMS
+  {%- for platform in platforms %}
+  {{ platform }}
+  {%- endfor %}
+
+DEPENDENCIES
+  {%- for dependency, opt in dependencies.items()|sort %}
+  {{ dependency }}{% if opt %} {{ opt }}{% endif %}
+  {%- endfor %}

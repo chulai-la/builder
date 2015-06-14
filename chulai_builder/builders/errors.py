@@ -1,0 +1,2 @@
+class ChulaiBuildError(Exception):
+    pass
