@@ -118,6 +118,15 @@ class Build(object):
         shcmd.mkdir(site)
         return site
 
+    @property
+    def exists(self):
+        tags = {
+            tag
+            for image in paas.docker.images(name=self.app.tag_name)
+            for tag in image["RepoTags"]
+        }
+        return self.tag in tags
+
     def build(self):
         omg = OutputManager()
 
@@ -126,24 +135,27 @@ class Build(object):
             try:
                 yield from omg.new_log(self.before_build())
 
-                for line in paas.docker.build(
-                    fileobj=self.prepare_context(),
-                    rm=True,
-                    forcerm=True,
-                    tag=self.tag,
-                    nocache=True,
-                    timeout=paas.build_timeout,
-                    custom_context=True
-                ):
-                    output = json.loads(line.decode("utf8"))
-                    if "error" in output:
-                        raise ChulaiBuildError(output["error"])
-                    elif "stream" in output:
-                        yield from omg.new_log(output["stream"])
-                    else:
-                        raise ValueError(
-                            "unknown docker build error: {0}".format(output)
-                        )
+                if self.exists:
+                    yield "image found, skip building..."
+                else:
+                    for line in paas.docker.build(
+                        fileobj=self.prepare_context(),
+                        rm=True,
+                        forcerm=True,
+                        tag=self.tag,
+                        nocache=True,
+                        timeout=paas.build_timeout,
+                        custom_context=True
+                    ):
+                        output = json.loads(line.decode("utf8"))
+                        if "error" in output:
+                            raise ChulaiBuildError(output["error"])
+                        elif "stream" in output:
+                            yield from omg.new_log(output["stream"])
+                        else:
+                            raise ValueError(
+                                "unknown docker build error: {0}".format(output)
+                            )
                 yield from omg.new_log(self.after_build())
                 yield from omg.new_event(build="success")
             except ChulaiBuildError as exc:
