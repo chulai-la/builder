@@ -4,11 +4,10 @@ USER root
 {% include "install-extra-libs" %}
 
 USER {{ paas.user }}
-{%- set app_root = "/home/" + paas.user + "/" + build.app.name %}
 
 {% include "sync-codebase" %}
 
-WORKDIR {{ app_root }}
+WORKDIR {{ build.app.work_dir }}
 {% include "rails/apply-project-configs" %}
 
 {% include "rails/bundle" %}

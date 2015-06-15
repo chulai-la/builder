@@ -3,6 +3,7 @@ import logging
 import os
 import traceback
 
+import docker
 import shcmd
 
 from . import consts
@@ -111,11 +112,16 @@ class Build(object):
     def prepare_context(self):
         raise NotImplementedError("prepare context not implemented")
 
-    def build(self):
+    @property
+    def construction_site(self):
         site = os.path.join(paas.construction_site, self.app.name)
+        shcmd.mkdir(site)
+        return site
+
+    def build(self):
         omg = OutputManager()
 
-        with shcmd.cd(site, create=True):
+        with shcmd.cd(self.construction_site):
             shcmd.rm(consts.BUILD_FAILURE_LOG)
             try:
                 yield from omg.new_log(self.before_build())
@@ -138,11 +144,10 @@ class Build(object):
                         raise ValueError(
                             "unknown docker build error: {0}".format(output)
                         )
-                # after build
-                # yield from self.after_build()
+                yield from omg.new_log(self.after_build())
                 yield from omg.new_event(build="success")
-            except:
-                yield from omg.new_event(build="failed")
+            except ChulaiBuildError as exc:
+                yield from omg.new_event(build="failed", reason=str(exc))
                 logger.error("build error", exc_info=True)
                 with open(consts.BUILD_FAILURE_LOG, "wt") as log_f:
                     log_f.write("trace:\n{0}\noutput:\n{1}\n".format(
@@ -159,22 +164,68 @@ class Build(object):
         else:
             return "{0}:{1}".format(self.app.tag_name, self.app.current)
 
+    def run_in_docker(self, command, volume):
+        binds={
+            on_host: dict(bind=in_docker, ro=False)
+            for in_docker, on_host in volume.items()
+        }
+        binds.update({
+            "/etc/localtime": dict(bind="/etc/localtime", ro=True)
+        })
+        cid = None
+        name = "{0}-operation".format(self.app.name)
+        try:
+            res = paas.docker.create_container(
+                self.tag,
+                user=paas.user,
+                command=command,
+                mem_limit=0, # no limit of memory
+                environment=self.app.env,
+                volumes=list(volume.keys()),
+                name=name,
+                labels=[name],
+                working_dir=self.app.work_dir,
+                host_config=docker.utils.create_host_config(binds=binds)
+            )
+            cid = res["Id"]
+            paas.docker.start(cid)
+
+            for log in paas.docker.logs(cid, stream=True):
+                yield log.decode("utf8").strip()
+
+            retcode = paas.docker.inspect_container(cid)["State"]["ExitCode"]
+            if retcode != 0:
+                tip = "command [{0}] returned {1}, deleting container {2}"\
+                    .format(command, retcode, cid)
+                logger.error(tip)
+                raise ChulaiBuildError(tip)
+        finally:
+            if cid is None:
+                # if cid is none, check again using label
+                containers = paas.docker.containers(
+                    all=True,
+                    filters=dict(label=name)
+                )
+                if containers:
+                    cid = containers[0]["Id"]
+            if cid is not None:
+                paas.docker.remove_container(cid)
+
     def __str__(self):
         return "<Build {0} of {1}>".format(self.commit, self.app.name)
-
 
 class RailsBuild(Build):
     @property
     def need_bundling(self):
         result = True
         if self.fresh_build:
-            logger.info("fresh build, need migration")
+            logger.info("fresh build, need bundling")
         elif "Gemfile.lock" in self.diff:
-            logger.info("Gemfile.lock has changed, need migration")
+            logger.info("Gemfile.lock has changed, need bundling")
         elif "Gemfile" in self.diff:
-            logger.info("Gemfile has changed, need migration")
+            logger.info("Gemfile has changed, need bundling")
         else:
-            logger.info("skip migration")
+            logger.info("skip bundling")
             result = False
         return result
 
@@ -197,3 +248,62 @@ class RailsBuild(Build):
         tar.add_fileobj("Gemfile", gf.gemfile)
         tar.add_fileobj("Gemfile.lock", gf.gemfile_lock)
         return tar.tar_io
+
+    @property
+    def need_precompilation(self):
+        assets_files = set()
+        for file_changed in self.diff:
+            if file_changed.startswith("vendor/assets"):
+                assets_files.add(file_changed)
+            elif file_changed.startswith("app/assets"):
+                assets_files.add(file_changed)
+        if assets_files:
+            logger.debug("following assets file has changed:\n{0}".format(
+                ", ".join(assets_files)
+            ))
+            logger.info("need precompile")
+            return True
+        else:
+            return False
+
+    @property
+    def need_migration(self):
+        migrate_flag = "db/schema.rb" in self.diff
+        if migrate_flag:
+            logger.info("need migration")
+        return migrate_flag
+
+    def migrate(self):
+        cmd = (
+            "bundle exec"
+            " rake db:migrate"
+            " RAILS_ENV=production"
+        )
+        yield from self.run_in_docker(cmd, {})
+
+    def precompile(self):
+        cmd = (
+            "bundle exec "
+            " rake assets:precompile"
+            " RAILS_ENV=production"
+            " RAILS_GROUP=assets"
+        )
+        shcmd.rm(self.host_precompilation_site, isdir=True)
+        volumes = {
+            os.path.join(self.app.work_dir, "public", "assets"):
+            self.host_precompilation_site
+        }
+        yield from self.run_in_docker(cmd, volumes)
+
+    @property
+    def host_precompilation_site(self):
+        site = os.path.join(self.construction_site, "assets")
+        shcmd.mkdir(site)
+        return site
+
+    def after_build(self):
+        if self.need_precompilation:
+            yield from self.precompile()
+        if self.need_migration:
+            yield from self.migrate()
+        yield from super(RailsBuild, self).after_build()

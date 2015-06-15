@@ -20,6 +20,8 @@ class OutputManager(object):
             log = [log]
         for line in log:
             line = line.strip()
+            if not line:
+                continue
             self._logs.append(line)
             for ign in self.IGNORES:
                 if line.startswith(ign):

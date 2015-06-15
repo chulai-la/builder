@@ -15,15 +15,15 @@ RUN cd /home/{{ paas.user }}/.ssh && \
 
 {%- if build.fresh_build %}
 RUN echo "Fresh build. Cloning codebase..."
-RUN git clone {{ build.app.repo }} {{ app_root }}
+RUN git clone {{ build.app.repo }} {{ build.app.work_dir }}
 {% else %}
 # fetch and clean
 RUN echo "Fetching and cleaning codebase..."
-RUN cd {{ app_root }} && \
+RUN cd {{ build.app.work_dir }} && \
     git reset --hard && \
     git clean -fdx && \
     git remote set-url origin {{ build.app.repo }} && \
     git fetch origin
 {% endif -%}
-RUN cd {{ app_root }} && git checkout {{ build.commit }}
+RUN cd {{ build.app.work_dir }} && git checkout {{ build.commit }}
 RUN rm /home/{{ paas.user }}/.ssh/id_rsa

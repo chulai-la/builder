@@ -1,5 +1,5 @@
 {% if build.need_bundling %}
-ADD Gemfile {{ app_root }}/Gemfile
-ADD Gemfile.lock {{ app_root }}/Gemfile.lock
+ADD Gemfile {{ build.app.work_dir }}/Gemfile
+ADD Gemfile.lock {{ build.app.work_dir }}/Gemfile.lock
 RUN bundle --deployment --without development:test --binstubs bin
 {% endif %}

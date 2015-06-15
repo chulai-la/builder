@@ -1,4 +1,5 @@
 import logging
+import os
 
 from .paas import paas
 from .build import RailsBuild
@@ -22,13 +23,13 @@ def get_builder(builder_type):
 
 
 class App(object):
-    def __init__(self, name, app_type, repo, base_image, current, config):
+    def __init__(self, name, app_type, repo, base_image, current, env):
         self._name = name
         self._app_type = app_type
         self._repo = repo
-        self._config = config
         self._base_image = base_image
         self._current = current
+        self._env = env
 
     @property
     def name(self):
@@ -43,8 +44,8 @@ class App(object):
         return "".join(["git@", paas.git, ":", self._repo, ".git"])
 
     @property
-    def config(self):
-        return self._config
+    def env(self):
+        return self._env.copy()
 
     @property
     def base_image(self):
@@ -78,3 +79,7 @@ class App(object):
     def new_build(self, commit):
         Builder = get_builder(self.app_type)
         return Builder(self, commit)
+
+    @property
+    def work_dir(self):
+        return os.path.join("/", "home", paas.user, self.name)

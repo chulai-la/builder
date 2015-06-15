@@ -14,7 +14,7 @@ def build():
         request.json["repo"],
         "ruby:2.2.0",  # base image
         request.json["current-image"],
-        {}
+        request.json["env"]
     )
 
     build = app.new_build(request.json["commit"])
