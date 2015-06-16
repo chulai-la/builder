@@ -158,7 +158,7 @@ class Build(object):
                             )
                 yield from omg.new_log(self.after_build())
                 yield from omg.new_event(build="success")
-            except ChulaiBuildError as exc:
+            except BaseException as exc:
                 yield from omg.new_event(build="failed", reason=str(exc))
                 logger.error("build error", exc_info=True)
                 with open(consts.BUILD_FAILURE_LOG, "wt") as log_f:
