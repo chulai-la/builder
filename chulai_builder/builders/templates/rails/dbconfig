@@ -2,9 +2,9 @@ production:
     adapter: mysql2
     encoding: utf8
     reconnect: true
-    database: {{ build.app.env.database }}
-    pool: {{ build.app.env.pool }}
-    username: {{ build.app.env.username }}
-    password: {{ build.app.env.password }}
-    host: {{ build.app.env.instance }}
+    database: <%= ENV['DB_NAME'] %>
+    pool: <%= ENV['DB_POOL'] %>
+    username: <%= ENV['DB_USR'] %>
+    password: <%= ENV['DB_PWD'] %>
+    host: <%= ENV['DB_HOST'] %>
 
