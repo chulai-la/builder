@@ -4,11 +4,17 @@ DOCKER_OPT = dict(
     timeout=300,
     tls=False
 )
+DOCKER_REGISTRY = "some.docker.registry"
 
 # user in container
 # 42... is the answer to every thing
 PAAS_USER = "chulai"
 PAAS_USER_UID = 4200
+
+# base env
+DEB_MIRROR = "http://mirrors.aliyun.com/ubuntu/"
+RUBY_BUILD_MIRROR = "http://ruby.taobao.org/mirrors"
+GEM_MIRROR = "https://ruby.taobao.org/"
 
 # will be test with `ssh git@git-domain`
 GIT_DEPLOY_KEY_PATH = "/path/to/git-deploy-key"

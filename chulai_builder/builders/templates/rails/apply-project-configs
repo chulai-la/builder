@@ -1,2 +1,2 @@
 # add customized config and gemfile
-# ADD blah blah
+ADD database.yml config/database.yml

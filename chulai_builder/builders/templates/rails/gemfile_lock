@@ -2,7 +2,7 @@ GEM
   remote: {{ source }}
   specs:
     {%- for spec, spec_dependencies in specs.items()|sort %}
-    {{ spec }}{% if dependencies[spec] %}({{ dependencies[spec] }}){% endif %}
+    {{ spec }}{% if dependencies[spec]|default(False) %}({{ dependencies[spec] }}){% endif %}
       {%- if spec_dependencies -%}
       {%- for spec_dependency in spec_dependencies|sort %}
       {{ spec_dependency }}

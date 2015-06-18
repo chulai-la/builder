@@ -18,6 +18,19 @@ class Paas(object):
         self._rails_dependencies = None
         self._build_timeout = None
         self._git_deploy_key = None
+        self._deb_mirror = None
+        self._gem_mirror = None
+        self._ruby_build_mirror = None
+        self._docker_registry = None
+
+    @property
+    def docker_registry(self):
+        return self._docker_registry
+
+    @docker_registry.setter
+    def docker_registry(self, new_registry):
+        self._docker_registry = new_registry
+        return self._docker_registry
 
     @property
     def docker(self):
@@ -112,6 +125,33 @@ class Paas(object):
         self._git_deploy_key = open(key_path).read()
         return self._git_deploy_key
 
+    @property
+    def deb_mirror(self):
+        return self._deb_mirror
+
+    @deb_mirror.setter
+    def deb_mirror(self, new_mirror):
+        self._deb_mirror = new_mirror
+        return self._deb_mirror
+
+    @property
+    def ruby_build_mirror(self):
+        return self._ruby_build_mirror
+
+    @ruby_build_mirror.setter
+    def ruby_build_mirror(self, new_mirror):
+        self._ruby_build_mirror = new_mirror
+        return self._ruby_build_mirror
+
+    @property
+    def gem_mirror(self):
+        return self._gem_mirror
+
+    @gem_mirror.setter
+    def gem_mirror(self, new_mirror):
+        self._gem_mirror = new_mirror
+        return self._gem_mirror
+
     def init_app(self, app):
         self.docker = docker.Client(**app.config["DOCKER_OPT"])
         self.user = app.config["PAAS_USER"]
@@ -121,6 +161,10 @@ class Paas(object):
         self.build_timeout = app.config["BUILD_TIMEOUT"]
         self.git = app.config["GIT"]
         self.git_deploy_key = app.config["GIT_DEPLOY_KEY_PATH"]
+        self.deb_mirror = app.config["DEB_MIRROR"]
+        self.ruby_build_mirror = app.config["RUBY_BUILD_MIRROR"]
+        self.gem_mirror = app.config["GEM_MIRROR"]
+        self.docker_registry = app.config["DOCKER_REGISTRY"]
 
 
 paas = Paas()

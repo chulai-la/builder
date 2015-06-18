@@ -136,7 +136,7 @@ class Build(object):
                 yield from omg.new_log(self.before_build())
 
                 if self.exists:
-                    yield "image found, skip building..."
+                    yield from omg.new_log("image found, skip building...")
                 else:
                     for line in paas.docker.build(
                         fileobj=self.prepare_context(),
@@ -254,11 +254,16 @@ class RailsBuild(Build):
             build=self, paas=paas
         )
 
+        dbconfig = env.get_template("rails/dbconfig").render(
+            build=self
+        )
+
         tar = shcmd.tar.TarGenerator()
         tar.add_fileobj("Dockerfile", dockerfile)
         tar.add_fileobj("id_rsa", paas.git_deploy_key)
         tar.add_fileobj("Gemfile", gf.gemfile)
         tar.add_fileobj("Gemfile.lock", gf.gemfile_lock)
+        tar.add_fileobj("database.yml", dbconfig)
         return tar.tar_io
 
     @property

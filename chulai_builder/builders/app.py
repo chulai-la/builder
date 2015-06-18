@@ -49,7 +49,7 @@ class App(object):
 
     @property
     def base_image(self):
-        return self._base_image
+        return "/".join([paas.docker_registry, self._base_image])
 
     @property
     def current(self):
@@ -57,24 +57,10 @@ class App(object):
 
     @property
     def tag_name(self):
-        """
-        env_name = reg-name/base-img:tag ==> base-img-tag
-        tag_name = app-name-env-name
-        """
-        splited = self._base_image.split("/")
-        if len(splited) == 1:
-            reg_name = ""
-            env_name = splited[0]
-        elif len(splited) == 2:
-            reg_name, env_name = splited
-            reg_name = reg_name + "/"
-        else:
-            raise ValueError("invalid base image format")
-
+        env_name = self._base_image
         for ori in ":._":
             env_name = env_name.replace(ori, "-")
-
-        return "{0}{1}-{2}".format(reg_name, self.name, env_name)
+        return "{0}/{1}-{2}".format(paas.docker_registry, self.name, env_name)
 
     def new_build(self, commit):
         Builder = get_builder(self.app_type)
