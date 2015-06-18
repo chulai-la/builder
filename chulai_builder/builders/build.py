@@ -291,6 +291,7 @@ class RailsBuild(Build):
         return migrate_flag
 
     def migrate(self):
+        yield "going to migrate..."
         cmd = (
             "bundle exec"
             " rake db:migrate"
@@ -299,6 +300,7 @@ class RailsBuild(Build):
         yield from self.run_in_docker(cmd, {})
 
     def precompile(self):
+        yield "going to precomile..."
         cmd = (
             "bundle exec "
             " rake assets:precompile"
