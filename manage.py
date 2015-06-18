@@ -32,7 +32,7 @@ def build(env):
                 ".",
                 rm=True,
                 nocache=True,
-                tag="{0}/{1}:{2}".format("test", env, ENVS[env])
+                tag="{0}/{1}:{2}".format(paas.docker_registry, env, ENVS[env])
             )
             for line in res:
                 print(line)

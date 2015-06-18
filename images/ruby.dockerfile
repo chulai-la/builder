@@ -1,4 +1,4 @@
-FROM node:0.12.4
+FROM {{ paas.docker_registry }}/node:0.12.4
 
 RUN apt-get update -y
 RUN apt-get install -y

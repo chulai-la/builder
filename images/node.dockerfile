@@ -1,4 +1,4 @@
-FROM base:14.04.2
+FROM {{ paas.docker_registry }}/base:14.04.2
 
 RUN apt-get update -y && apt-get install -y python make build-essential
 ADD node-v0.12.4.tar.gz /tmp
