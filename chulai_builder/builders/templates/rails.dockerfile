@@ -11,3 +11,4 @@ WORKDIR {{ build.app.work_dir }}
 {% include "rails/apply-project-configs" %}
 
 {% include "rails/bundle" %}
+

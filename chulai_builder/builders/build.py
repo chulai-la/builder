@@ -10,6 +10,7 @@ from . import consts
 from .paas import paas
 from .errors import ChulaiBuildError
 from .gem import Gemfile
+from .instance import Instance
 from .template import env
 from .utils import OutputManager
 
@@ -326,3 +327,6 @@ class RailsBuild(Build):
         if self.need_migration:
             yield from self.migrate()
         yield from super(RailsBuild, self).after_build()
+
+    def get_instance(self, instance_id, instance_type, port):
+        return Instance(self, instance_id, instance_type, port)

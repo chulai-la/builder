@@ -62,10 +62,19 @@ class App(object):
             env_name = env_name.replace(ori, "-")
         return "{0}/{1}-{2}".format(paas.docker_registry, self.name, env_name)
 
-    def new_build(self, commit):
+    def get_build(self, commit):
         Builder = get_builder(self.app_type)
         return Builder(self, commit)
 
     @property
     def work_dir(self):
+        # work dir in docker
         return os.path.join("/", "home", paas.user, self.name)
+
+    @property
+    def construction(self):
+        """construction on builder host"""
+
+    @property
+    def playground(self):
+        """playground on agent host"""
