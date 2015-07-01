@@ -1,3 +1,4 @@
+import json
 import os
 
 from .paas import paas
@@ -14,6 +15,14 @@ class Instance(object):
     @property
     def build(self):
         return self._build
+
+    @property
+    def start_sec(self):
+        return self.build.app.env.get("START_TIMEOUT", paas.start_timeout)
+
+    @property
+    def stop_sec(self):
+        return self.build.app.env.get("STOP_TIMEOUT", paas.start_timeout)
 
     @property
     def dirs_to_make(self):
@@ -43,9 +52,17 @@ class Instance(object):
         return os.path.join(paas.playground, self.instance_id)
 
     @property
+    def env_json(self):
+        return json.dumps(self.build.app.env)
+
+    @property
+    def env(self):
+        return self.build.app.env.copy()
+
+    @property
     def logs_dir(self):
         return os.path.join(self.playground, "chulai-log.d")
 
     @property
     def stdlogs_dir(self):
-       return os.path.join(self.playground, "stdout-log.d")
+        return os.path.join(self.playground, "stdout-log.d")
