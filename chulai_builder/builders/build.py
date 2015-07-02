@@ -158,6 +158,7 @@ class Build(object):
                                 "unknown docker build error: {0}".format(output)
                             )
                 yield from omg.new_log(self.after_build())
+                yield from omg.new_log(self.push())
                 yield from omg.new_event(build="success")
             except BaseException as exc:
                 yield from omg.new_event(build="failed", reason=str(exc))
@@ -166,6 +167,15 @@ class Build(object):
                     log_f.write("trace:\n{0}\noutput:\n{1}\n".format(
                         traceback.format_exc(), omg.log
                     ))
+
+    def push(self):
+        yield "pushing image {0}".format(self.tag)
+        try:
+            paas.docker.push(self.app.tag_name, self.commit)
+        except BaseException as exc:
+            raise ChulaiBuildError(
+                "push image [{0}] failed: {1}".format(self.tag, exc)
+            )
 
     def after_build(self):
         yield self.final_report
