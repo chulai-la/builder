@@ -41,7 +41,11 @@ class Build(object):
 
     @property
     def tag(self):
-        return "{0}:{1}".format(self.app.tag_name, self.commit)
+        return "{0}:{1}".format(self.repo, self.commit)
+
+    @property
+    def repo(self):
+        return self.app.tag_name
 
     @property
     def diff(self):
@@ -171,7 +175,7 @@ class Build(object):
     def push(self):
         yield "pushing image {0}".format(self.tag)
         try:
-            paas.docker.push(self.app.tag_name, self.commit)
+            paas.docker.push(self.repo, self.commit)
         except BaseException as exc:
             raise ChulaiBuildError(
                 "push image [{0}] failed: {1}".format(self.tag, exc)
