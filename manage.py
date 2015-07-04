@@ -1,6 +1,7 @@
 # -*- coding: utf8 -*-
 
 import os
+import sys
 
 import flask.ext.script
 import jinja2
@@ -39,6 +40,13 @@ def build(env):
         finally:
             shcmd.rm("Dockerfile")
     print(env, paas)
+
+
+@manager.command
+def test():
+    import nose
+    with app.app_context():
+        nose.run(argv=list(sys.argv) + ["tests"])
 
 
 if __name__ == "__main__":

@@ -1,4 +1,4 @@
-from .template import env
+from .env import env
 
 
 class Gemfile(object):

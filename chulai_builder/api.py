@@ -19,7 +19,7 @@ def setup_build():
             request.json["current-image"],
             request.json["env"]
         )
-    except:
+    except KeyError as exc:
         abort(400)
     g.build = app.get_build(request.json["commit"])
 
@@ -37,6 +37,6 @@ def gen_supervisor_conf():
             request.json["instance-type"],
             request.json.get("port")
         )
-    except:
+    except KeyError:
         abort(400)
     return instance.supervisor_conf

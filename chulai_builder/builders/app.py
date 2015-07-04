@@ -1,7 +1,8 @@
 import logging
 import os
 
-from .paas import paas
+from ..paas import paas
+
 from .build import RailsBuild
 
 

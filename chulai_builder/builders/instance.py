@@ -1,8 +1,9 @@
 import json
 import os
 
-from .paas import paas
-from .template import env
+from ..paas import paas
+
+from .env import env
 
 
 class Instance(object):

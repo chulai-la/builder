@@ -28,6 +28,8 @@ class Paas(object):
         self._playground = None
         self._log_max_mb = None
         self._log_backups = None
+        self._assets_dir = None
+        self._admin_host = None
 
     @property
     def log_backups(self):
@@ -140,13 +142,8 @@ class Paas(object):
 
     @construction_site.setter
     def construction_site(self, new_site):
-        if os.path.isdir(new_site):
-            abspath = os.path.realpath(new_site)
-            if os.access(abspath, os.W_OK):
-                self._construction_site = abspath
-                logger.info("constrution site set to {0}".format(abspath))
-                return
-        raise ValueError("construction site dir should be writable")
+        self._construction_site = _can_write(new_site, "constrution site")
+        return self._construction_site
 
     @property
     def rails_dependencies(self):
@@ -212,6 +209,33 @@ class Paas(object):
         self._gem_mirror = new_mirror
         return self._gem_mirror
 
+    @property
+    def assets_dir(self):
+        return self._assets_dir
+
+    @assets_dir.setter
+    def assets_path(self, new_dir):
+        self._assets_dir = _can_write(new_dir, "app assets dir")
+        return self._assets_dir
+
+    @property
+    def admin_host(self):
+        return self._admin_host
+
+    @admin_host.setter
+    def admin_host(self, new_host):
+        self._admin_host = new_host
+        return self._admin_host
+
+    @property
+    def nginx_conf_dir(self):
+        return self._nginx_conf_dir
+
+    @nginx_conf_dir.setter
+    def nginx_conf_dir(self, conf_dir):
+        self._nginx_conf_dir = _can_write(conf_dir, "nginx conf dir")
+        return self._nginx_conf_dir
+
     def init_app(self, app):
         self.docker = docker.Client(**app.config["DOCKER_OPT"])
         self.user = app.config["PAAS_USER"]
@@ -231,6 +255,18 @@ class Paas(object):
         self.playground = app.config["PLAYGROUND"]
         self.log_max_mb = app.config["LOG_MAX_MB"]
         self.log_backups = app.config["LOG_BACKUPS"]
+        self.assets_path = app.config["ASSETS_DIR"]
+        self.admin_host = app.config["ADMIN_HOST"]
+        self.nginx_conf_dir = app.config["NGINX_CONF_DIR"]
+
+
+def _can_write(test_path, path_name):
+    if os.path.isdir(test_path):
+        abspath = os.path.realpath(test_path)
+        if os.access(abspath, os.W_OK):
+            logger.info("{0} set to [{1}]".format(path_name, abspath))
+            return abspath
+    raise ValueError("{0} dir should be writable".format(path_name))
 
 
 paas = Paas()

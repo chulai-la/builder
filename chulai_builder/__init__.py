@@ -1,5 +1,5 @@
 from flask import Flask
-from .builders.paas import paas
+from .paas import paas
 
 
 def create_app(config_path):

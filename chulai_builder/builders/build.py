@@ -6,12 +6,13 @@ import traceback
 import docker
 import shcmd
 
+from ..paas import paas
+
 from . import consts
-from .paas import paas
+from .env import env
 from .errors import ChulaiBuildError
 from .gem import Gemfile
 from .instance import Instance
-from .template import env
 from .utils import OutputManager
 
 
