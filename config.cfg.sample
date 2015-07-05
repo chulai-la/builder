@@ -41,3 +41,4 @@ LOG_BACKUPS = 5
 ASSETS_DIR = "/path/to/assets/dir"
 NGINX_CONF_DIR = "/path/to/nginx/conf/dir"
 ADMIN_HOST = "wo.chulai.la"
+NGINX_PATH = "/path/to/your/nginx-bin"

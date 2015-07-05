@@ -30,6 +30,18 @@ class Paas(object):
         self._log_backups = None
         self._assets_dir = None
         self._admin_host = None
+        self._nginx_path = None
+
+    @property
+    def nginx_path(self):
+        return self._nginx_path
+
+    @nginx_path.setter
+    def nginx_path(self, nginx_path):
+        if not os.path.isfile(nginx_path):
+            raise ValueError("invalid nginx path")
+        self._nginx_path = nginx_path
+        return self._nginx_path
 
     @property
     def log_backups(self):
@@ -258,6 +270,7 @@ class Paas(object):
         self.assets_path = app.config["ASSETS_DIR"]
         self.admin_host = app.config["ADMIN_HOST"]
         self.nginx_conf_dir = app.config["NGINX_CONF_DIR"]
+        self._nginx_path = app.config["NGINX_PATH"]
 
 
 def _can_write(test_path, path_name):
