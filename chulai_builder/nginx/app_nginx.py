@@ -71,7 +71,10 @@ class AppNginx(object):
 
     @property
     def nginx_conf_path(self):
-        return os.path.join(paas.nginx_conf_dir, self.app_id)
+        return os.path.join(
+            paas.nginx_conf_dir,
+            "{0}.ini".format(self.app_id)
+        )
 
     def publish(self):
         with open(self.nginx_conf_path, "wt") as conf_f:
