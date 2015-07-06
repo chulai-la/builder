@@ -158,6 +158,8 @@ class Build(object):
                             raise ChulaiBuildError(output["error"])
                         elif "stream" in output:
                             yield from omg.new_log(output["stream"])
+                        elif "status" in output:
+                            yield from omg.new_log(output["status"])
                         else:
                             raise ValueError(
                                 "unknown docker build error: {0}".format(output)

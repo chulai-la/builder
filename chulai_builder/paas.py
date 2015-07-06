@@ -184,7 +184,7 @@ class Paas(object):
         """**always set git first**"""
         try:
             shcmd.run(
-                "ssh git@{0} -i {1} -o PasswordAuthentication=no".format(
+                "ssh git@{0} -i {1}".format(
                     self.git, key_path
                 ),
                 timeout=60
