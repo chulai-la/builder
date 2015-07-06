@@ -9,7 +9,9 @@ class OutputManager(object):
         "---> ",
         "Removing intermediate container ",
         "Successfully built ",
-        "Step "
+        "Step ",
+        "Pulling from ",
+        "Already exists"
     )
 
     def __init__(self):
