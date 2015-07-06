@@ -8,5 +8,3 @@ itsdangerous==0.24
 requests==2.7.0
 shcmd==0.4.1
 six==1.9.0
-
-git+https://github.com/supervisor/supervisor.git
