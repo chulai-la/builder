@@ -220,10 +220,16 @@ class Build(object):
             cid = res["Id"]
             paas.docker.start(cid)
 
-            for log in paas.docker.logs(cid, stream=True):
-                yield log.decode("utf8").strip()
+            state = paas.docker.inspect_container(cid)["State"]
+            showed = 0
+            while state["Running"]:
+                for log in paas.docker.logs(cid, stream=True):
+                    for __ in range(showed):
+                        pass
+                    yield log.decode("utf8").strip()
+                    showed += 1
 
-            retcode = paas.docker.inspect_container(cid)["State"]["ExitCode"]
+            retcode = state["ExitCode"]
             if retcode != 0:
                 tip = "command [{0}] returned {1}, deleting container {2}"\
                     .format(command, retcode, cid)
