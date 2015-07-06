@@ -2,6 +2,7 @@ import json
 import logging
 import os
 import traceback
+import time
 
 import docker
 import shcmd
@@ -230,6 +231,7 @@ class Build(object):
                         continue
                     showed += 1
                     yield log.decode("utf8").strip()
+                time.sleep(0.1)
 
             retcode = state["ExitCode"]
             if retcode != 0:
