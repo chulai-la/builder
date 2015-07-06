@@ -225,7 +225,7 @@ class Build(object):
             while state["Running"]:
                 for log in paas.docker.logs(cid, stream=True):
                     for __ in range(showed):
-                        pass
+                        continue
                     yield log.decode("utf8").strip()
                     showed += 1
 
