@@ -15,7 +15,7 @@ def setup_build():
             request.json["app-id"],
             "rails",  # app_type
             request.json["repo"],
-            "ruby:2.2.0",  # base image
+            request.json["base-image"],
             request.json["current-image"],
             request.json["env"]
         )
