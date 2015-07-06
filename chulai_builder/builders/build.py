@@ -222,15 +222,15 @@ class Build(object):
             paas.docker.start(cid)
 
             state = paas.docker.inspect_container(cid)["State"]
-            showed = 0
+            showed = 1
             while state["Running"]:
                 idx = 0
-                for log in paas.docker.logs(cid, stream=True):
-                    if idx < showed:
-                        idx += 1
+                for log in paas.docker.logs(cid, True, True, True):
+                    idx += 1
+                    if showed > idx:
                         continue
-                    showed += 1
                     yield log.decode("utf8").strip()
+                    showed += 1
                 time.sleep(0.1)
 
             retcode = state["ExitCode"]
