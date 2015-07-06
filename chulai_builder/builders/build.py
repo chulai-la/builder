@@ -232,6 +232,7 @@ class Build(object):
                     yield log.decode("utf8").strip()
                     showed += 1
                 time.sleep(0.1)
+                state = paas.docker.inspect_container(cid)["State"]
 
             retcode = state["ExitCode"]
             if retcode != 0:
