@@ -8,7 +8,7 @@ from flask import request
 import requests
 
 from .builders import App
-from ..paas import paas
+from .paas import paas
 
 builder_api = Blueprint("builder_api", __name__)
 
