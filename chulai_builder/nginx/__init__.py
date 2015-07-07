@@ -1,4 +1,5 @@
-from flask import Blueprint, Response
+from flask import Blueprint
+from flask import current_app
 from flask import request
 from flask import g
 from flask import abort
@@ -22,10 +23,11 @@ def setup_nginx():
             request.json["sleeping-enabled"],
             request.json["streaming-enabled"]
         )
-    except KeyError as exc:
+    except KeyError:
+        current_app.logger.error("invalid request", exc_info=True)
         abort(400)
 
 
 @api.route("/router/update", methods=["PUT"])
 def update_router():
-    g.nginx
+    g.nginx.publish()

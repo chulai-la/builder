@@ -30,6 +30,7 @@ class Paas(object):
         self._log_backups = None
         self._assets_dir = None
         self._admin_host = None
+        self._agent_host = None
         self._nginx_path = None
 
     @property
@@ -240,6 +241,15 @@ class Paas(object):
         return self._admin_host
 
     @property
+    def agent_host(self):
+        return self._agent_host
+
+    @agent_host.setter
+    def agent_host(self, new_host):
+        self._agent_host = new_host
+        return self._agent_host
+
+    @property
     def nginx_conf_dir(self):
         return self._nginx_conf_dir
 
@@ -269,8 +279,9 @@ class Paas(object):
         self.log_backups = app.config["LOG_BACKUPS"]
         self.assets_path = app.config["ASSETS_DIR"]
         self.admin_host = app.config["ADMIN_HOST"]
+        self.agent_host = app.config["AGENT_HOST"]
         self.nginx_conf_dir = app.config["NGINX_CONF_DIR"]
-        self._nginx_path = app.config["NGINX_PATH"]
+        self.nginx_path = app.config["NGINX_PATH"]
 
 
 def _can_write(test_path, path_name):
