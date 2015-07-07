@@ -51,7 +51,7 @@ def gen_supervisor_conf(instance_id):
         json={
             "supervisor-config": instance.supervisor_conf,
             "files-to-mount": {},  # FIXME
-            "dirs-to-make": []
+            "dirs-to-make": instance.dirs_to_make
         }
     )
     res.raise_for_status()
