@@ -42,6 +42,14 @@ class Instance(object):
         return self._instance_type
 
     @property
+    def memory_limit(self):
+        try:
+            mem = int(self.build.app.env.get("MEMORY_LIMIT", paas.default_mem))
+        except:
+            mem = paas.default_mem
+        return mem
+
+    @property
     def supervisor_conf(self):
         template = env.get_template(
             "supervisor.conf".format(self.instance_type)

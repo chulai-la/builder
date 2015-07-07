@@ -32,6 +32,16 @@ class Paas(object):
         self._admin_host = None
         self._agent_host = None
         self._nginx_path = None
+        self._default_mem = None
+
+    @property
+    def default_mem(self):
+        return self._default_mem
+
+    @default_mem.setter
+    def default_mem(self, new_limit):
+        self._default_mem = int(new_limit)
+        return self._default_mem
 
     @property
     def nginx_path(self):
@@ -282,6 +292,7 @@ class Paas(object):
         self.agent_host = app.config["AGENT_HOST"]
         self.nginx_conf_dir = app.config["NGINX_CONF_DIR"]
         self.nginx_path = app.config["NGINX_PATH"]
+        self.default_mem = app.config["DEFAULT_MEM"]
 
 
 def _can_write(test_path, path_name):
