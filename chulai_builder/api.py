@@ -39,7 +39,7 @@ def build():
 def gen_supervisor_conf(instance_id):
     try:
         instance = g.build.get_instance(
-            request.json["instance-id"],
+            instance_id,
             request.json["instance-type"],
             request.json.get("port")
         )
