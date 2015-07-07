@@ -47,7 +47,7 @@ def gen_supervisor_conf(instance_id):
         current_app.logger.error("missing fields", exc_info=True)
         abort(400)
     res = requests.put(
-        "http://{0}/instances/deploy".format(paas.agent_host),
+        "http://{0}/instances/{1}/deploy".format(paas.agent_host, instance_id),
         json={
             "supervisor-config": instance.supervisor_conf,
             "files-to-mount": {},  # FIXME
