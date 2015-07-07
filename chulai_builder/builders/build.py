@@ -138,7 +138,8 @@ class Build(object):
         omg = OutputManager()
 
         with shcmd.cd(self.construction_site):
-            shcmd.rm(consts.BUILD_FAILURE_LOG)
+            err_log_path = os.path.realpath(consts.BUILD_FAILURE_LOG)
+            shcmd.rm(err_log_path)
             try:
                 yield from omg.new_log(self.before_build())
 
@@ -171,7 +172,7 @@ class Build(object):
             except BaseException as exc:
                 yield from omg.new_event(build="failed", reason=str(exc))
                 logger.error("build error", exc_info=True)
-                with open(consts.BUILD_FAILURE_LOG, "wt") as log_f:
+                with open(err_log_path, "wt") as log_f:
                     log_f.write("trace:\n{0}\noutput:\n{1}\n".format(
                         traceback.format_exc(), omg.log
                     ))
@@ -179,7 +180,7 @@ class Build(object):
     def push(self):
         yield "pushing image {0}".format(self.tag)
         try:
-            paas.docker.push(self.repo, self.commit)
+            paas.docker.push(self.repo, self.commit, insecure_registry=True)
         except BaseException as exc:
             raise ChulaiBuildError(
                 "push image [{0}] failed: {1}".format(self.tag, exc)
