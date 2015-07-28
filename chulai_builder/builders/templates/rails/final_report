@@ -1,10 +1,6 @@
-App: {{ build.app_id }}@{{ build.commit }}
+Build: {{ build.app.app_id }}@{{ build.commit }}
 Base Image: {{ build.app.base_image }}
-Ancestor: {{ build.ancestor }}
-Bundling: {{ build.need_bundling }}
+Ancestor: {{ build.app.current }}
+Need Bundling: {{ build.need_bundling }}
 Need Precompilation: {{ build.need_precompilation }}
-{% if build.ok -%}
-Status: OK
-{% else %}
-Status: error
-{%- endif %}
+Need Migration: {{ build.need_migration }}
