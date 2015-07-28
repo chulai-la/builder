@@ -40,6 +40,10 @@ class OutputManager(object):
         self._logs.append(msg)
         yield json.dumps(dict(type="event", message=msg)) + "\n"
 
+    def raw_event(self, message):
+        self._logs.append("raw event: {0}".format(message))
+        yield json.dumps(dict(type="event", **message)) + "\n"
+
     @property
     def log(self):
         return "\n".join(self._logs) + "\n"

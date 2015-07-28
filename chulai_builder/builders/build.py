@@ -166,8 +166,9 @@ class Build(object):
                             )
                 yield from omg.new_log(self.after_build())
                 yield from omg.new_log(self.push())
-                yield from omg.new_event({
-                    "build": "success",
+                yield from omg.raw_event({
+                    "operation": "build",
+                    "status": "success",
                     "image-tag": self.tag
                 })
             except BaseException as exc:
