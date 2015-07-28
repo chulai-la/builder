@@ -1,17 +1,10 @@
 App: {{ build.app_id }}@{{ build.commit }}
 Base Image: {{ build.app.base_image }}
 Ancestor: {{ build.ancestor }}
-Operations:
-  {% for -%}
-  {%- endfor %}
-  - bundle: skiped
-  - migrate: skiped
-  - precompile: skiped
 Bundling: {{ build.need_bundling }}
 Need Precompilation: {{ build.need_precompilation }}
 {% if build.ok -%}
 Status: OK
 {% else %}
 Status: error
-Reason:
 {%- endif %}

@@ -105,7 +105,7 @@ class Build(object):
 
     @property
     def final_report(self):
-        return "final report"
+        return render_template("rails/final_report", build=self)
 
     def before_build(self):
         # before build
