@@ -10,10 +10,9 @@ import shcmd
 from ..paas import paas
 
 from . import consts
-from .env import env
+from .template_loader import render_template
 from .errors import ChulaiBuildError
 from .gem import Gemfile
-from .instance import Instance
 from .utils import OutputManager
 
 
@@ -102,8 +101,7 @@ class Build(object):
 
     @property
     def preflight_report(self):
-        template = env.get_template("rails/preflight_report")
-        return template.render(build=self)
+        return render_template("rails/preflight_report", build=self)
 
     @property
     def final_report(self):
@@ -121,7 +119,7 @@ class Build(object):
 
     @property
     def construction_site(self):
-        site = os.path.join(paas.construction_site, self.app.name)
+        site = os.path.join(paas.construction_site, self.app.app_id)
         shcmd.mkdir(site)
         return site
 
@@ -205,7 +203,7 @@ class Build(object):
             "/etc/localtime": dict(bind="/etc/localtime", ro=True)
         })
         cid = None
-        name = "{0}-operation".format(self.app.name)
+        name = "{0}-operation".format(self.app.app_id)
         try:
             res = paas.docker.create_container(
                 self.tag,
@@ -254,7 +252,7 @@ class Build(object):
                 paas.docker.remove_container(cid)
 
     def __str__(self):
-        return "<Build {0} of {1}>".format(self.commit, self.app.name)
+        return "<Build {0} of {1}>".format(self.commit, self.app.app_id)
 
 class RailsBuild(Build):
     @property
@@ -280,13 +278,8 @@ class RailsBuild(Build):
             gf.inject_dependency(*deps)
 
         # gererate dockerfile
-        dockerfile = env.get_template("rails.dockerfile").render(
-            build=self, paas=paas
-        )
-
-        dbconfig = env.get_template("rails/dbconfig").render(
-            build=self
-        )
+        dockerfile = render_template("rails.dockerfile", build=self, paas=paas)
+        dbconfig = render_template("rails/dbconfig", build=self)
 
         tar = shcmd.tar.TarGenerator()
         tar.add_fileobj("Dockerfile", dockerfile)
@@ -356,6 +349,3 @@ class RailsBuild(Build):
         if self.need_migration:
             yield from self.migrate()
         yield from super(RailsBuild, self).after_build()
-
-    def get_instance(self, instance_id, instance_type, port):
-        return Instance(self, instance_id, instance_type, port)

@@ -22,26 +22,10 @@ class Paas(object):
         self._gem_mirror = None
         self._ruby_build_mirror = None
         self._docker_registry = None
-        self._start_timeout = None
-        self._stop_timeout = None
-        self._paas_domain = None
-        self._playground = None
-        self._log_max_mb = None
-        self._log_backups = None
+
         self._assets_dir = None
         self._admin_host = None
-        self._agent_host = None
         self._nginx_path = None
-        self._default_mem = None
-
-    @property
-    def default_mem(self):
-        return self._default_mem
-
-    @default_mem.setter
-    def default_mem(self, new_limit):
-        self._default_mem = int(new_limit)
-        return self._default_mem
 
     @property
     def nginx_path(self):
@@ -53,60 +37,6 @@ class Paas(object):
             raise ValueError("invalid nginx path")
         self._nginx_path = nginx_path
         return self._nginx_path
-
-    @property
-    def log_backups(self):
-        return self._log_backups
-
-    @log_backups.setter
-    def log_backups(self, new_backups):
-        self._log_backups = int(new_backups)
-        return self._log_backups
-
-    @property
-    def log_max_mb(self):
-        return self._log_max_mb
-
-    @log_max_mb.setter
-    def log_max_mb(self, new_max_mb):
-        self._log_max_mb = int(new_max_mb)
-        return self._log_max_mb
-
-    @property
-    def playground(self):
-        return self._playground
-
-    @playground.setter
-    def playground(self, new_playground):
-        self._playground = new_playground
-        return self._playground
-
-    @property
-    def start_timeout(self):
-        return self._start_timeout
-
-    @start_timeout.setter
-    def start_timeout(self, new_timeout):
-        self._start_timeout = new_timeout
-        return self._start_timeout
-
-    @property
-    def stop_timeout(self):
-        return self._stop_timeout
-
-    @stop_timeout.setter
-    def stop_timeout(self, new_timeout):
-        self._stop_timeout = new_timeout
-        return self._stop_timeout
-
-    @property
-    def paas_domain(self):
-        return self._paas_domain
-
-    @paas_domain.setter
-    def paas_domain(self, new_domain):
-        self._paas_domain = new_domain
-        return self._paas_domain
 
     @property
     def docker_registry(self):
@@ -251,15 +181,6 @@ class Paas(object):
         return self._admin_host
 
     @property
-    def agent_host(self):
-        return self._agent_host
-
-    @agent_host.setter
-    def agent_host(self, new_host):
-        self._agent_host = new_host
-        return self._agent_host
-
-    @property
     def nginx_conf_dir(self):
         return self._nginx_conf_dir
 
@@ -281,18 +202,10 @@ class Paas(object):
         self.ruby_build_mirror = app.config["RUBY_BUILD_MIRROR"]
         self.gem_mirror = app.config["GEM_MIRROR"]
         self.docker_registry = app.config["DOCKER_REGISTRY"]
-        self.start_timeout = app.config["START_TIMEOUT"]
-        self.stop_timeout = app.config["STOP_TIMEOUT"]
-        self.paas_domain = app.config["PAAS_DOMAIN"]
-        self.playground = app.config["PLAYGROUND"]
-        self.log_max_mb = app.config["LOG_MAX_MB"]
-        self.log_backups = app.config["LOG_BACKUPS"]
         self.assets_path = app.config["ASSETS_DIR"]
         self.admin_host = app.config["ADMIN_HOST"]
-        self.agent_host = app.config["AGENT_HOST"]
         self.nginx_conf_dir = app.config["NGINX_CONF_DIR"]
         self.nginx_path = app.config["NGINX_PATH"]
-        self.default_mem = app.config["DEFAULT_MEM"]
 
 
 def _can_write(test_path, path_name):

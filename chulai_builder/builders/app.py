@@ -24,8 +24,8 @@ def get_builder(builder_type):
 
 
 class App(object):
-    def __init__(self, name, app_type, repo, base_image, current, env):
-        self._name = name
+    def __init__(self, app_id, app_type, repo, base_image, current, env):
+        self._app_id = app_id
         self._app_type = app_type
         self._repo = repo
         self._base_image = base_image
@@ -33,8 +33,8 @@ class App(object):
         self._env = env
 
     @property
-    def name(self):
-        return self._name
+    def app_id(self):
+        return self._app_id
 
     @property
     def app_type(self):
@@ -61,7 +61,7 @@ class App(object):
         env_name = self._base_image
         for ori in ":._":
             env_name = env_name.replace(ori, "-")
-        return "{0}/{1}-{2}".format(paas.docker_registry, self.name, env_name)
+        return "{0}/{1}-{2}".format(paas.docker_registry, self.app_id, env_name)
 
     def get_build(self, commit):
         Builder = get_builder(self.app_type)
@@ -70,7 +70,7 @@ class App(object):
     @property
     def work_dir(self):
         # work dir in docker
-        return os.path.join("/", "home", paas.user, self.name)
+        return os.path.join("/", "home", paas.user, self.app_id)
 
     @property
     def construction(self):

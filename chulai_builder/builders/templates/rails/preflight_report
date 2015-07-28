@@ -1,4 +1,4 @@
-Build: {{ build.app.name }}@{{ build.commit }}
+Build: {{ build.app.app_id }}@{{ build.commit }}
 Base Image: {{ build.app.base_image }}
 Ancestor: {{ build.app.current }}
 Need Bundling: {{ build.need_bundling }}

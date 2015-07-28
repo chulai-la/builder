@@ -1,4 +1,4 @@
-from .env import env
+from .template_loader import render_template
 
 
 class Gemfile(object):
@@ -120,21 +120,8 @@ class Gemfile(object):
 
     @property
     def gemfile(self):
-        template = env.get_template("rails/gemfile")
-        return template.render(self._gemfile)
+        return render_template("rails/gemfile", self._gemfile)
 
     @property
     def gemfile_lock(self):
-        template = env.get_template("rails/gemfile_lock")
-        return template.render(self._gemfile_lock)
-
-
-if __name__ == "__main__":
-    gf = Gemfile(open("Gemfile").read(), open("Gemfile.lock").read())
-    gf.inject_dependency("mysql2", "0.3.18", [])
-    gf.inject_dependency("puma", "2.11.2", ["rack (>= 1.1, < 2.0)"])
-    print(gf.gemfile_lock)
-    #print("#" * 20)
-    #print(gf.gemfile_lock)
-    #print("#" * 20)
-    #print(gf.gemfile_lock)
+        return render_template("rails/gemfile_lock", self._gemfile_lock)
