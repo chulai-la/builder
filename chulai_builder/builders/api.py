@@ -16,7 +16,7 @@ def setup_build():
     try:
         app = App(
             request.json["app-id"],
-            "rails",  # app_type
+            request.json["app-type"],
             request.json["repo"],
             request.json["base-image"],
             request.json["current-image"],
