@@ -31,8 +31,12 @@ class OutputManager(object):
             else:
                 yield json.dumps(dict(type="log", message=line)) + "\n"
 
-    def new_event(self, **event):
-        msg = "\n".join("{0}: {1}".format(k, v) for k, v in event.items())
+    def new_event(self, *args, **events):
+        info = {}
+        for current in args:
+            info.update(current)
+        info.update(events)
+        msg = "\n".join("{0}: {1}".format(k, v) for k, v in info.items())
         self._logs.append(msg)
         yield json.dumps(dict(type="event", message=msg)) + "\n"
 
