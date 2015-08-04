@@ -27,7 +27,7 @@ def setup_build():
         tip = "missing field: {0}".format(exc)
         current_app.logger.error(tip, exc_info=True)
         return Response(
-            json.dumps(dict(status="error", tip=tip)),
+            json.dumps(dict(status="error", message=tip)),
             status=400,
             mimetype="application/json"
         )
