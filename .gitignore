@@ -60,3 +60,4 @@ target/
 /config.cfg
 /venv
 *tar.gz
+.python-version

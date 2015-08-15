@@ -8,7 +8,10 @@ def create_app(config_path):
 
     paas.init_app(app)
 
-    from .builders.api import builder_api
-    app.register_blueprint(builder_api)
+    from . import builders
+    app.register_blueprint(builders.api)
+
+    from . import nginx
+    app.register_blueprint(nginx.api)
 
     return app

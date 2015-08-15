@@ -8,10 +8,10 @@ from flask import request
 from .app import App
 
 
-builder_api = Blueprint("builder_api", __name__)
+api = Blueprint("builder_api", __name__)
 
 
-@builder_api.before_request
+@api.before_request
 def setup_build():
     try:
         app = App(
@@ -34,6 +34,6 @@ def setup_build():
     g.build = app.get_build(commit)
 
 
-@builder_api.route("/builds", methods=["POST"])
+@api.route("/builds", methods=["POST"])
 def build():
     return Response(g.build.build(), mimetype="application/x-chulai-log")

@@ -1,4 +1,4 @@
-from .api import builder_api
+from .api import api
 
 
-__all__ = ["builder_api"]
+__all__ = ["api"]

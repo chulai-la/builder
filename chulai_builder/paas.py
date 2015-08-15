@@ -167,7 +167,7 @@ class Paas(object):
         return self._assets_dir
 
     @assets_dir.setter
-    def assets_path(self, new_dir):
+    def assets_dir(self, new_dir):
         self._assets_dir = _can_write(new_dir, "app assets dir")
         return self._assets_dir
 
@@ -202,7 +202,7 @@ class Paas(object):
         self.ruby_build_mirror = app.config["RUBY_BUILD_MIRROR"]
         self.gem_mirror = app.config["GEM_MIRROR"]
         self.docker_registry = app.config["DOCKER_REGISTRY"]
-        self.assets_path = app.config["ASSETS_DIR"]
+        self.assets_dir = app.config["ASSETS_DIR"]
         self.admin_host = app.config["ADMIN_HOST"]
         self.nginx_conf_dir = app.config["NGINX_CONF_DIR"]
         self.nginx_path = app.config["NGINX_PATH"]

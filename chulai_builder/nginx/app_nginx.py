@@ -79,7 +79,13 @@ class AppNginx(object):
     def publish(self):
         with open(self.nginx_conf_path, "wt") as conf_f:
             conf_f.write(self.nginx_conf)
-        shcmd.run(
-            "sudo {0} -t -c /etc/nginx/nginx.conf".format(paas.nginx_path)
-        )
-        shcmd.run("sudo /etc/init.d/nginx reload")
+        self._check_and_reload()
+
+    def destroy(self):
+        shcmd.rm(self.nginx_conf_path)
+        self._check_and_reload()
+
+    def _check_and_reload(self):
+        cmd = "sudo {0} -c /etc/nginx/nginx.conf".format(paas.nginx_path)
+        shcmd.run("{0} -t".format(cmd))
+        shcmd.run("{0} -s reload".format(cmd))
