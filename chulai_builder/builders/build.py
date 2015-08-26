@@ -239,8 +239,14 @@ class Build(object):
 
             retcode = state["ExitCode"]
             if retcode != 0:
-                tip = "command [{0}] returned {1}, deleting container {2}"\
-                    .format(command, retcode, cid)
+                fmt = (
+                    "command [{0}] returned {1}\n"
+                    "full log:\n"
+                    "{2}\n"
+                    "deleting container {3}"
+                )
+                full_log = paas.docker.logs(cid, True, True, False)
+                tip = fmt.format(command, retcode, full_log, cid)
                 logger.error(tip)
                 raise ChulaiBuildError(tip)
         finally:
