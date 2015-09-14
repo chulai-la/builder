@@ -345,8 +345,8 @@ class RailsBuild(Build):
         return site
 
     def after_build(self):
-        if self.need_precompilation:
-            yield from self.precompile()
         if self.need_migration:
             yield from self.migrate()
+        if self.need_precompilation:
+            yield from self.precompile()
         yield from super(RailsBuild, self).after_build()
