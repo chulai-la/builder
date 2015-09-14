@@ -1,3 +1,3 @@
 {% if build.need_bundling %}
-RUN bundle --deployment --without development:test --binstubs bin && bundle clean
+RUN bundle -V --deployment --without development:test --binstubs bin && bundle clean
 {% endif %}
