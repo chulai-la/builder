@@ -12,7 +12,6 @@ from ..paas import paas
 from . import consts
 from .template_loader import render_template
 from .errors import ChulaiBuildError
-from .gem import Gemfile
 from .utils import OutputManager
 
 
@@ -281,12 +280,6 @@ class RailsBuild(Build):
 
     @shcmd.cd_to(consts.LOCAL_GIT)
     def prepare_context(self):
-        # inject required gems (mysql and puma)
-        gf = Gemfile(open("Gemfile").read(), open("Gemfile.lock").read())
-
-        for deps in paas.rails_dependencies:
-            gf.inject_dependency(*deps)
-
         # gererate dockerfile
         dockerfile = render_template("rails.dockerfile", build=self, paas=paas)
         dbconfig = render_template("rails/dbconfig", build=self)
@@ -294,8 +287,6 @@ class RailsBuild(Build):
         tar = shcmd.tar.TarGenerator()
         tar.add_fileobj("Dockerfile", dockerfile)
         tar.add_fileobj("id_rsa", paas.git_deploy_key)
-        tar.add_fileobj("Gemfile", gf.gemfile)
-        tar.add_fileobj("Gemfile.lock", gf.gemfile_lock)
         tar.add_fileobj("database.yml", dbconfig)
         return tar.tar_io
 

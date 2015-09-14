@@ -15,7 +15,6 @@ class Paas(object):
         self._uid = None
         self._git = None
         self._construction_site = None
-        self._rails_dependencies = None
         self._build_timeout = None
         self._git_deploy_key = None
         self._deb_mirror = None
@@ -97,15 +96,6 @@ class Paas(object):
     def construction_site(self, new_site):
         self._construction_site = _can_write(new_site, "constrution site")
         return self._construction_site
-
-    @property
-    def rails_dependencies(self):
-        return self._rails_dependencies[:]
-
-    @rails_dependencies.setter
-    def rails_dependencies(self, new_dep):
-        self._rails_dependencies = new_dep[:]
-        return self._rails_dependencies[:]
 
     @property
     def build_timeout(self):
@@ -194,7 +184,6 @@ class Paas(object):
         self.user = app.config["PAAS_USER"]
         self.uid = app.config["PAAS_USER_UID"]
         self.construction_site = app.config["CONSTRUCTION_SITE"]
-        self.rails_dependencies = app.config["RAILS_DEPENDENCIES"]
         self.build_timeout = app.config["BUILD_TIMEOUT"]
         self.git = app.config["GIT"]
         self.git_deploy_key = app.config["GIT_DEPLOY_KEY_PATH"]
