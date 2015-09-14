@@ -340,7 +340,7 @@ class RailsBuild(Build):
 
     @property
     def host_precompilation_site(self):
-        site = os.path.join(self.construction_site, "assets")
+        site = os.path.join(paas.assets_dir, self.app.app_id)
         shcmd.mkdir(site)
         return site
 
