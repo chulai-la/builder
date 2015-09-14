@@ -21,7 +21,7 @@ RUN git clone {{ build.app.repo }} {{ build.app.work_dir }}
 RUN echo "Fetching and cleaning codebase..."
 RUN cd {{ build.app.work_dir }} && \
     git reset --hard && \
-    git clean -fdx && \
+    git clean -fX && \
     git remote set-url origin {{ build.app.repo }} && \
     git fetch origin
 {% endif -%}
