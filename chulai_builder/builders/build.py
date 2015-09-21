@@ -350,7 +350,7 @@ class RailsBuild(Build):
         if self.need_precompilation:
             yield from self.precompile()
         # upload assets
-        with shcmd.cd(host_precompilation_site):
+        with shcmd.cd(self.host_precompilation_site):
             tg = shcmd.TarGenerator()
             tg.files_to_add(os.listdir())
             paas.upload(self.tag, data=tar.tg)
