@@ -344,6 +344,10 @@ class RailsBuild(Build):
         shcmd.mkdir(site)
         return site
 
+    @property
+    def assets_name(self):
+        return "{0}/{1}".format(self.app.image_name, self.commit)
+
     def after_build(self):
         if self.need_migration:
             yield from self.migrate()
@@ -353,5 +357,5 @@ class RailsBuild(Build):
         with shcmd.cd(self.host_precompilation_site):
             tg = shcmd.TarGenerator()
             tg.files_to_add = os.listdir()
-            paas.upload(self.tag, data=tg.tar)
+            paas.upload(self.assets_name, data=tg.tar)
         yield from super(RailsBuild, self).after_build()

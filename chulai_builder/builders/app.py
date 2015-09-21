@@ -58,10 +58,15 @@ class App(object):
 
     @property
     def tag_name(self):
+        image_name = self.image_name.replace("/", "-")
+        return "{0}/{1}".format(paas.docker_registry, image_name)
+
+    @property
+    def image_name(self):
         env_name = self._base_image
         for ori in ":._":
             env_name = env_name.replace(ori, "-")
-        return "{0}/{1}-{2}".format(paas.docker_registry, self.app_id, env_name)
+        return "{0}/{1}".format(self.app_id, env_name)
 
     def get_build(self, commit):
         Builder = get_builder(self.app_type)
