@@ -36,3 +36,9 @@ ASSETS_DIR = "/path/to/assets/dir"
 NGINX_CONF_DIR = "/path/to/nginx/conf/dir"
 ADMIN_HOST = "wo.chulai.la"
 NGINX_PATH = "/path/to/your/nginx-bin"
+
+# oss settings
+OSS_UPLOAD_PATH = "https://chulai-storage.oss-cn-beijing-internal.aliyuncs.com/assets/{0}.tar"
+OSS_BUCKET = "chulai-storage"
+OSS_ACCESS_KEY = "OSS_ACCESS_KEY"
+OSS_SECRET_KEY = "OSS_SECRET_KEY"

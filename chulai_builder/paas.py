@@ -2,7 +2,10 @@ import logging
 import os
 
 import docker
+import requests
 import shcmd
+
+from aliyunauth import OssAuth
 
 
 logger = logging.getLogger(__name__)
@@ -195,6 +198,30 @@ class Paas(object):
         self.admin_host = app.config["ADMIN_HOST"]
         self.nginx_conf_dir = app.config["NGINX_CONF_DIR"]
         self.nginx_path = app.config["NGINX_PATH"]
+
+        self.upload_path = app.config["OSS_UPLOAD_PATH"]
+        self._session = requests.session()
+        self._session.auth = OssAuth(
+            app.config["OSS_BUCKET"],
+            app.config["OSS_ACCESS_KEY"],
+            app.config["OSS_SECRET_KEY"]
+        )
+
+    @property
+    def upload_path(self):
+        return self._upload_path
+
+    @upload_path.setter
+    def upload_path(self, new_path):
+        self._upload_path = new_path
+
+    @property
+    def session(self):
+        return self._session
+
+    def upload(self, filename, data):
+        res = self.session.put(self.upload_path.format(filename), data=data)
+        res.raise_for_status()
 
 
 def _can_write(test_path, path_name):
