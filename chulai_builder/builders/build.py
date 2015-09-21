@@ -216,7 +216,6 @@ class Build(object):
                 environment=self.app.env,
                 volumes=list(volume.keys()),
                 name=name,
-                labels=[name],
                 working_dir=self.app.work_dir,
                 host_config=docker.utils.create_host_config(binds=binds)
             )
@@ -250,13 +249,8 @@ class Build(object):
                 raise ChulaiBuildError(tip)
         finally:
             if cid is None:
-                # if cid is none, check again using label
-                containers = paas.docker.containers(
-                    all=True,
-                    filters=dict(label=name)
-                )
-                if containers:
-                    cid = containers[0]["Id"]
+                # if cid is none, check again using name
+                cid = utils.get_cid_by_name(name)
             if cid is not None:
                 paas.docker.remove_container(cid)
 

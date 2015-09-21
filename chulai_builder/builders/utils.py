@@ -3,6 +3,8 @@ try:
 except:
     import json
 
+from ..paas import paas
+
 
 class OutputManager(object):
     IGNORES = (
@@ -47,3 +49,11 @@ class OutputManager(object):
     @property
     def log(self):
         return "\n".join(self._logs) + "\n"
+
+
+def get_cid_by_name(name):
+    containers = paas.docker.containers(all=True)
+    for container in containers:
+        if name in container["Names"]:
+            return container["Id"]
+    return None
