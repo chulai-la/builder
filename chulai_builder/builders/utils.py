@@ -54,6 +54,7 @@ class OutputManager(object):
 def get_cid_by_name(name):
     containers = paas.docker.containers(all=True)
     for container in containers:
+        name = "/{0}".format(name)
         if name in container["Names"]:
             return container["Id"]
     return None
