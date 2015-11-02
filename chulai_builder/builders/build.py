@@ -12,7 +12,7 @@ from ..paas import paas
 from . import consts
 from .template_loader import render_template
 from .errors import ChulaiBuildError
-from .utils import OutputManager
+from .utils import OutputManager, get_cid_by_name
 
 
 logger = logging.getLogger(__name__)
@@ -250,7 +250,7 @@ class Build(object):
         finally:
             if cid is None:
                 # if cid is none, check again using name
-                cid = utils.get_cid_by_name(name)
+                cid = get_cid_by_name(name)
             if cid is not None:
                 paas.docker.remove_container(cid)
 
