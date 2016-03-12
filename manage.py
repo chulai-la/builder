@@ -20,9 +20,9 @@ manager = flask.ext.script.Manager(app)
 @manager.command
 def build(env):
     ENVS = dict(
-        base="14.04.2",
-        node="0.12.6",
-        ruby="2.2.2"
+        base="14.04.3",
+        node="4.4.0",
+        ruby="2.3.0"
     )
     with shcmd.cd(os.path.join(__curdir__, "images")):
         template = jinja2.Template(open("{0}.dockerfile".format(env)).read())
