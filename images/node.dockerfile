@@ -1,10 +1,9 @@
-FROM {{ paas.docker_registry }}/base:14.04.3
+FROM {{ paas.docker_registry }}/base:16.04
 
-RUN apt-get update -y && apt-get install -y python make build-essential
-ADD node-v4.4.0.tar.gz /tmp
-RUN cd /tmp/node-v4.4.0 && \
-    ./configure && \
-    make && \
-    make install && \
-    rm -rf /tmp/node-v4.4.0*
+ADD node-v6.11.0-linux-x64.tar.xz /usr/local/node
+ENV PATH /usr/local/node/bin:$PATH
+
+RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -
+RUN echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list
+RUN apt-get update -y && apt-get install -y yarn
 RUN apt-get clean -y

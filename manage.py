@@ -20,8 +20,8 @@ manager = flask.ext.script.Manager(app)
 @manager.command
 def build(env):
     ENVS = dict(
-        base="14.04.3",
-        node="4.4.0",
+        base="16.04",
+        node="6.11.0",
         ruby="2.3.0"
     )
     with shcmd.cd(os.path.join(__curdir__, "images")):

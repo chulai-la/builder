@@ -1,4 +1,4 @@
-FROM ubuntu:14.04.2
+FROM ubuntu:16.04
 
 RUN echo "deb {{ paas.deb_mirror }} trusty main restricted universe multiverse" > /etc/apt/sources.list && \
     echo "deb {{ paas.deb_mirror }} trusty-security main restricted universe multiverse" >> /etc/apt/sources.list && \
