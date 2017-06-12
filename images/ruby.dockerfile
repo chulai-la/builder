@@ -1,4 +1,4 @@
-FROM {{ paas.docker_registry }}/node:5.4.0
+FROM {{ paas.docker_registry }}/node:6.11.0
 
 
 RUN curl -O https://dl.yarnpkg.com/debian/pubkey.gpg && apt-key add pubkey.gpg
