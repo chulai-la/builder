@@ -7,5 +7,5 @@ RUN echo "deb {{ paas.deb_mirror }} xenial main restricted universe multiverse" 
     echo "deb {{ paas.deb_mirror }} xenial-backports main restricted universe multiverse" >> /etc/apt/sources.list
 
 RUN apt-get update -y
-RUN apt-get install mariadb-client redis-tools curl vim tmux nmon htop sl cowsay tree tig autossh -y
+RUN apt-get install mariadb-client redis-tools curl vim tmux nmon htop sl cowsay tree tig autossh apt-transport-https -y
 RUN rm -rf /var/cache/apt && apt-get clean -y
